@@ -1,0 +1,608 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Seans-TypeScript-NodeJS-CRUD-REST-API-Boilerplate",
+        "description": "A minimal and easy to follow example of what you need to create a CRUD style API in NodeJs using TypeScript",
+        "license": {
+            "name": "MyProject"
+        }
+    },
+    "paths": {
+        "/user/signup": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "User",
+                        "description": "User Object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign up user in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "User email and password",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserLogin"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login user",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Please provide email and password"
+                    },
+                    "401": {
+                        "description": "Incorrect email or password"
+                    }
+                }
+            }
+        },
+        "/user/forgotPassword": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "email",
+                        "description": "User Email",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/email"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Send email to  user in order to reset password",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "There was an error sending the email"
+                    }
+                }
+            }
+        },
+        "/user/resetPassword/{token}": {
+            "patch": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Set a new password with the link that was sent to email",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Token is invalid"
+                    }
+                }
+            }
+        },
+        "/user/updateMyPassword": {
+            "patch": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "header",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "New and current passwords",
+                        "description": "User passwords",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdatePassword"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Set a new password",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Your current password is invalid"
+                    }
+                }
+            }
+        },
+        "/user/updateMe": {
+            "patch": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "User's fields",
+                        "description": "The fields that the user wants to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUser"
+                        }
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update the users fields, except for password",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "This route is not for password updates"
+                    }
+                }
+            }
+        },
+        "/shop/": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Shop"
+                ],
+                "summary": "Get all shops in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/addProductToShop/{id}'": {
+            "put": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "Product",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newProduct"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Shop"
+                ],
+                "summary": "Add a product to a shop",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/shop/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Shop Id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Shop"
+                ],
+                "summary": "Get a shop in system by Id",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/shop/createShop": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "Shop",
+                        "description": "Shop Object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Shop"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Shop"
+                ],
+                "summary": "Create shop in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/product/": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get all products in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/product/{id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get a product in system by Id",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/product/createProduct": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "Product",
+                        "description": "Product Object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Create product in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/cart/": {
+            "get": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Get all carts in system",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        },
+        "/cart/{id}": {
+            "patch": {
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "User Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "User's cart Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "Product id",
+                        "description": "Id of Product to be added in cart",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/newItem"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add a product to cart",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Failed"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "UpdateUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Product": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "required": true
+                },
+                "price": {
+                    "type": "integer",
+                    "required": true
+                },
+                "description": {
+                    "type": "string",
+                    "required": true
+                },
+                "image": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "UserLogin": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "email": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "UpdatePassword": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "passwordConfirm": {
+                    "type": "string",
+                    "required": true
+                },
+                "passwordCurrent": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "id": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "newProduct": {
+            "properties": {
+                "newProduct": {
+                    "type": "string"
+                }
+            }
+        },
+        "newItem": {
+            "properties": {
+                "newItem": {
+                    "type": "string"
+                }
+            }
+        },
+        "email": {
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "required": true
+                },
+                "email": {
+                    "type": "string",
+                    "required": true
+                },
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "passwordConfirm": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "Shop": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "required": true
+                },
+                "image": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string",
+                    "required": true
+                },
+                "products": {
+                    "type": "string",
+                    "required": true,
+                    "description": "products is an array of strings"
+                }
+            }
+        }
+    }
+}
