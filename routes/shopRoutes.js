@@ -7,6 +7,12 @@ const router = express.Router();
 router
     .route('/')
     .get(userController.protect, shopController.getAllShops);
+router
+    .route('/uploadFile')
+    .get(userController.protect, shopController.uploadFile);
+router
+    .route('/readFile')
+    .get(userController.protect, shopController.readFile);
 
 router
     .route('/createShop')

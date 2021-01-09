@@ -1,9 +1,47 @@
 const { Shop } = require('../models/shopModel');
+const AWS = require('aws-sdk');
+const fs = require('fs');
 
+
+const s3 = new AWS.S3
+
+exports.uploadFile = (fileId, file) => {
+    console.log('qna agi')
+    // Read content from the file
+    const fileContent = fs.readFileSync('qata.jpg');
+    // Setting up S3 upload parameters
+    const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: 'images/qata.jpg', // File name you want to save as in S3
+        Body: fileContent
+    };
+
+    // Uploading files to the bucket
+    s3.upload(params, function (err, data) {
+        if (err) {
+            throw err;
+        }
+    });
+};
+exports.readFile = async (fileName) => {
+    const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: 'images/qata.jpg', // File name you want to save as in S3
+    };
+    const file = await s3.getObject(params, function (err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log(data);           // successful response
+    });
+    console.log(file, 'failiii');
+}
 
 exports.getAllShops = async (req, res) => {
     try {
-        const shops = await Shop.find();
+        const shops = await Shop.find().populate({
+            path: 'products',
+            select: '-__v'
+        })
+
         res.status(201).json({
             status: 'success',
             body: {
