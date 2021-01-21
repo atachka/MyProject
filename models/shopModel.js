@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const shopSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'please tell us your name!']
+        required: [true, 'a shop must have a name!']
     },
     image: {
         type: String

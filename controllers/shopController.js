@@ -1,41 +1,68 @@
 const { Shop } = require('../models/shopModel');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const AppError = require('../utils/appError');
+const jpeg = require('jpeg-js');
+
 
 
 const s3 = new AWS.S3
 
-exports.uploadFile = (fileId, file) => {
-    console.log('qna agi')
-    // Read content from the file
-    const fileContent = fs.readFileSync('qata.jpg');
-    // Setting up S3 upload parameters
-    const params = {
-        Bucket: process.env.BUCKET_NAME,
-        Key: 'images/qata.jpg', // File name you want to save as in S3
-        Body: fileContent
-    };
+exports.uploadFile = (req, res, next, filename, fileContent) => {
+    try {
+        // Setting up S3 upload parameters
+        const params = {
+            Bucket: process.env.BUCKET_NAME,
+            Key: filename, // File name you want to save as in S3
+            Body: `images/${fileContent}`
+        };
 
-    // Uploading files to the bucket
-    s3.upload(params, function (err, data) {
-        if (err) {
-            throw err;
-        }
-    });
+        // Uploading files to the bucket
+        s3.upload(params, function (err, data) {
+            if (err) {
+                throw err;
+            }
+        });
+        res.status(200).json({
+            status: "success",
+            fileContent
+        })
+    }
+
+    catch (err) {
+        next(new AppError(err, 401))
+    }
 };
-exports.readFile = async (fileName) => {
-    const params = {
-        Bucket: process.env.BUCKET_NAME,
-        Key: 'images/qata.jpg', // File name you want to save as in S3
-    };
-    const file = await s3.getObject(params, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
-    });
-    console.log(file, 'failiii');
+
+exports.readFile = async (req, res, next, fileName) => {
+    try {
+        const params = {
+            Bucket: process.env.BUCKET_NAME,
+            Key: `images/${fileName}`, // File name you want to read as in S3
+        };
+        const file = await s3.getObject(params, function (err, data) {
+            // successful response
+            const dataBody = data.Body
+            res.status(200).json({
+                status: 'success',
+                dataBody
+            });
+
+
+        });
+        // if (file) {
+        //     const rawImageData = jpeg.decode(file, { useTArray: true });
+        // }
+
+
+
+    }
+    catch (err) {
+        next(new AppError(err, 401))
+    }
 }
 
-exports.getAllShops = async (req, res) => {
+exports.getAllShops = async (req, res, next) => {
     try {
         const shops = await Shop.find().populate({
             path: 'products',
@@ -50,14 +77,11 @@ exports.getAllShops = async (req, res) => {
         });
     }
     catch (err) {
-        res.status(401).json({
-            status: 'failed',
-            message: err
-        });
+        next(new AppError(err, 401))
     }
 };
 
-exports.createShop = async (req, res) => {
+exports.createShop = async (req, res, next) => {
     try {
         const newShop = await Shop.create(req.body);
         res.status(201).json({
@@ -68,15 +92,11 @@ exports.createShop = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err)
-        res.status(401).json({
-            status: 'failed',
-            message: err
-        });
+        next(new AppError(err, 401))
     }
 };
 
-exports.getShop = async (req, res) => {
+exports.getShop = async (req, res, next) => {
     try {
         const shop = await Shop.findById(req.params.id).populate({
             path: 'products',
@@ -90,14 +110,11 @@ exports.getShop = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(401).json({
-            status: 'failed',
-            message: err
-        })
+        next(new AppError(err, 401))
     }
 };
 
-exports.addProductToShop = async (req, res) => {
+exports.addProductToShop = async (req, res, next) => {
     try {
         const shop = await Shop.findById(req.params.id);
         const newArr = [...shop.products, req.body.newProduct]
@@ -109,10 +126,6 @@ exports.addProductToShop = async (req, res) => {
     }
 
     catch (err) {
-        console.log(err)
-        res.status(401).json({
-            status: 'failed',
-            message: err
-        })
+        next(new AppError(err, 401))
     }
 };

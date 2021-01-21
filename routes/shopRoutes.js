@@ -9,10 +9,10 @@ router
     .get(userController.protect, shopController.getAllShops);
 router
     .route('/uploadFile')
-    .get(userController.protect, shopController.uploadFile);
+    .post(shopController.uploadFile);
 router
     .route('/readFile')
-    .get(userController.protect, shopController.readFile);
+    .get(shopController.readFile);
 
 router
     .route('/createShop')
