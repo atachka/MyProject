@@ -8,13 +8,13 @@ const jpeg = require('jpeg-js');
 
 const s3 = new AWS.S3
 
-exports.uploadFile = (req, res, next, filename, fileContent) => {
+exports.uploadFile = (req, res, next,) => {
     try {
         // Setting up S3 upload parameters
         const params = {
             Bucket: process.env.BUCKET_NAME,
-            Key: filename, // File name you want to save as in S3
-            Body: `images/${fileContent}`
+            Key: `images/${req.body.fileName}`, // File name you want to save as in S3
+            Body: req.body.fileContent
         };
 
         // Uploading files to the bucket
@@ -34,11 +34,11 @@ exports.uploadFile = (req, res, next, filename, fileContent) => {
     }
 };
 
-exports.readFile = async (req, res, next, fileName) => {
+exports.readFile = async (req, res, next) => {
     try {
         const params = {
             Bucket: process.env.BUCKET_NAME,
-            Key: `images/${fileName}`, // File name you want to read as in S3
+            Key: `images/${req.body.fileName}`, // File name you want to read as in S3
         };
         const file = await s3.getObject(params, function (err, data) {
             // successful response
