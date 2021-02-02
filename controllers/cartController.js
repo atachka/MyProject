@@ -10,11 +10,10 @@ exports.createCart = async (req, res, next) => {
     try {
         const newCart = await Cart.create(req.body);
         req.cart = newCart._id;
-        console.log(newCart, 'niukarti')
         next()
     }
     catch (err) {
-        console.log(err)
+
         res.status(401).json({
             status: 'failed',
             message: err
@@ -37,7 +36,6 @@ exports.getCarts = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err)
         res.status(401).json({
             status: 'failed',
             message: err
@@ -70,7 +68,6 @@ exports.addToCart = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err)
         res.status(401).json({
             status: 'failed',
             message: err
