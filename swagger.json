@@ -332,7 +332,7 @@
                     "201": {
                         "description": "Success"
                     },
-                    "401": {
+                    "404": {
                         "description": "Failed"
                     }
                 }

@@ -97,9 +97,7 @@ exports.protect = async (req, res, next) => {
       process.env.JWT_SECRET
     );
     const confirmedUser = await User.findById(decoded.id);
-    // if (!confirmedUser) {
-    //     return next(new AppError('User doesnt exist', 401))
-    // };
+
     confirmedUser.changedPasswordAfter(decoded.iat);
     req.user = confirmedUser;
     next();

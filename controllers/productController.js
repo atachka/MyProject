@@ -20,8 +20,14 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
-    let query = isObjectEmpty(req.query) ? {} : queryBuilder(req.query);
-    const products = await Product.find(query);
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 50;
+    const skip = (page - 1) * limit;
+    let limitedQuery = { ...req.query };
+    delete limitedQuery.limit;
+    delete limitedQuery.page;
+    let query = isObjectEmpty(limitedQuery) ? {} : queryBuilder(limitedQuery);
+    const products = await Product.find(query).skip(skip).limit(limit);
 
     res.status(201).json({
       status: "success",
@@ -30,8 +36,7 @@ exports.getAllProducts = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
-    res.status(200).json({
+    res.status(404).json({
       status: "failed",
       message: err,
     });

@@ -1,5 +1,4 @@
 exports.queryBuilder = (fields) => {
-  console.log(fields);
   const keys = Object.keys(fields);
   return keys.reduce(
     (acc, fieldName) => {
